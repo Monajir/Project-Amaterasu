@@ -9,6 +9,7 @@ typedef enum GameScreen
     LOGO = 0,
     TITLE,
     GAMEPLAY,
+    BOSSTRANSITION,
     GAMEOVER,
     ENDING
 } GameScreen;
@@ -194,15 +195,6 @@ int main(void)
     Texture2D five = LoadTexture("D:/GameDev(Raylib)/Assests/Parallex Bgs/Clouds prallex Bg/Clouds 8/5.png");
     Texture2D six = LoadTexture("D:/GameDev(Raylib)/Assests/Parallex Bgs/Clouds prallex Bg/Clouds 8/6.png");
 
-    // Initializing Music
-    InitAudioDevice();
-
-    Music musicTitle = LoadMusicStream("D:/GameDev(Raylib)/Assests/mp3/Ambient 5.mp3");
-    Music musicGamePLay = LoadMusicStream("D:/GameDev(Raylib)/Assests/mp3/Action 5.mp3");
-
-    PlayMusicStream(musicTitle);
-    PlayMusicStream(musicGamePLay);
-
     float scrollingOne = 0.0f;
     float scrollingTwo = 0.0f;
     float scrollingThree = 0.0f;
@@ -267,9 +259,6 @@ int main(void)
             {
                 spriteIndex = 0;
             }
-
-            // Music
-            UpdateMusicStream(musicTitle);
         }
         break;
         case GAMEPLAY:
@@ -295,6 +284,10 @@ int main(void)
                 maxEnemyDiff = 0.50f;
                 gameSpeed = 2;
             }
+            else
+            {
+                currentScreen = BOSSTRANSITION;
+            }
 
             UpdateGame();
 
@@ -318,9 +311,11 @@ int main(void)
                 scrollingFive = 0;
             if (scrollingSix <= -three.width * 1.38)
                 scrollingSix = 0;
-
-            // Music
-            UpdateMusicStream(musicGamePLay);
+        }
+        break;
+        case BOSSTRANSITION:
+        {
+            deltaTime = GetFrameTime();
         }
         break;
         case GAMEOVER:
@@ -458,6 +453,11 @@ int main(void)
             DrawGame();
         }
         break;
+        case BOSSTRANSITION:
+        {
+            DrawText(TextFormat("Boss Transition"), screenWidth / 2 - UNIT / 2, screenHeight / 2 - UNIT / 2, UNIT, BLACK);
+        }
+        break;
         case GAMEOVER:
         {
             DrawRectangle(restartRect.x, restartRect.y, restartRect.width, restartRect.height, BLACK);
@@ -496,11 +496,6 @@ int main(void)
     UnloadTexture(obeliskTexture); // Unload foreground texture
     UnloadTexture(enemyType1);     // Unload background texture
     UnloadTexture(enemyType2);     // Unload midground texture
-
-    // Unload music
-    UnloadMusicStream(musicTitle);
-
-    CloseAudioDevice();
 
     CloseWindow(); // Close window and OpenGL context
     //--------------------------------------------------------------------------------------
